@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Outprod;
+use App\Models\TempOutprod;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
+use Illuminate\Http\Request;
 
-class OutprodController extends DefaultController
+class TempOutprodController extends DefaultController
 {
-    protected $modelClass = Outprod::class;
+    protected $modelClass = TempOutprod::class;
     protected $title;
     protected $generalUri;
     protected $tableHeaders;
@@ -17,8 +19,8 @@ class OutprodController extends DefaultController
 
     public function __construct()
     {
-        $this->title = 'Outprod';
-        $this->generalUri = 'outprod';
+        $this->title = 'Temp Outprod';
+        $this->generalUri = 'temp-outprod';
         // $this->arrPermissions = [];
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
 
@@ -50,14 +52,13 @@ class OutprodController extends DefaultController
             ['name' => 'Id cv', 'column' => 'id_cv', 'order' => true],
             ['name' => 'Barcode awal', 'column' => 'barcode_awal', 'order' => true],
             ['name' => 'Barcode kbn', 'column' => 'barcode_kbn', 'order' => true],
-
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];
 
 
         $this->importExcelConfig = [
-            'primaryKeys' => ['serial_np'],
+            'primaryKeys' => ['line_no'],
             'headers' => [
                 ['name' => 'Line no', 'column' => 'line_no'],
                 ['name' => 'Carline', 'column' => 'carline'],
@@ -344,5 +345,53 @@ class OutprodController extends DefaultController
         ];
 
         return $rules;
+    }
+
+
+    public function viewScanNp()
+    {
+        $data['title'] = 'Scan Np';
+
+        return view('backend.idev.scan_np', $data);
+    }
+
+
+    public function submitScanNpApi(Request $request)
+    {
+        $qrcode = $request->code;
+
+        $outprod = Outprod::where('serial_np', $qrcode)->first();
+
+        if ($outprod) {
+            $attributes = $outprod->toArray();
+            $tempOutprod = TempOutprod::updateOrCreate(
+                ['serial_np' => $qrcode], // Conditions for matching
+                $attributes                // Attributes to update or create
+            );
+    
+            return [
+                'status' => true,
+                'message' => 'Sukses',
+                'data' => $tempOutprod
+            ];
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Data Tidak Ditemukan',
+            'data' => null
+        ];
+    }
+
+
+    public function getScanNpApi()
+    {
+        $tempOutprod = TempOutprod::take(20)->get();
+
+        return [
+            'status' => true,
+            'message' => 'Sukses',
+            'data' => $tempOutprod
+        ];
     }
 }

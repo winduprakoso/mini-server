@@ -66,12 +66,20 @@ class Sidebar
           'ajax_load' => false,
           'childrens' => []
         ],
-
         [
           'name' => 'Outprod',
           'icon' => 'ti ti-menu',
           'key' => 'outprod',
           'base_key' => 'outprod',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Temp Outprod',
+          'icon' => 'ti ti-menu',
+          'key' => 'temp-outprod',
+          'base_key' => 'temp-outprod',
           'visibility' => true,
           'ajax_load' => false,
           'childrens' => []
