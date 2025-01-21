@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OutprodController;
 use App\Http\Controllers\TempOutprodController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::group(['middleware' => ['web', 'auth']], function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
     Route::resource('outprod', OutprodController::class);
     Route::get('outprod-api', [OutprodController::class, 'indexApi'])->name('outprod.listapi');
     Route::get('outprod-export-pdf-default', [OutprodController::class, 'exportPdf'])->name('outprod.export-pdf-default');
