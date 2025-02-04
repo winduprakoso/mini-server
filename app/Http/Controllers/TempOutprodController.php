@@ -6,6 +6,7 @@ use App\Models\Outprod;
 use App\Models\TempOutprod;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class TempOutprodController extends DefaultController
 {
@@ -15,6 +16,7 @@ class TempOutprodController extends DefaultController
     protected $tableHeaders;
     // protected $actionButtons;
     // protected $arrPermissions;
+    protected $socketUrl = "http://127.0.0.1:3000";
     protected $importExcelConfig;
 
     public function __construct()
@@ -368,6 +370,15 @@ class TempOutprodController extends DefaultController
                 ['serial_np' => $qrcode], // Conditions for matching
                 $attributes                // Attributes to update or create
             );
+
+            $totalTempOutProd = TempOutprod::count();
+
+            $response = Http::post($this->socketUrl.'/update-monitor', [
+                'serial_np' => $qrcode,
+                'scanned_at' => now(),
+                'total' => $totalTempOutProd
+            ]);
+
     
             return [
                 'status' => true,

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+</head>
+
+<body>
+    <div>TOTAL</div>
+    <h1 id="txt-total"></h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>NO</th>
+                <th>Code</th>
+                <th>Scanned At</th>
+            </tr>
+        </thead>
+        <tbody class="list-sample">
+        </tbody>
+    </table>
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="assets/js/jquery.min.js"></script>
+<script>
+    var sock = io();
+    var intNumb = 1
+    sock.on('update-monitor-realtime', function (response) {
+        var mHtml = "<tr>"
+            mHtml += "<td>"+intNumb+"</td>"
+            mHtml += "<td>"+ response.data.serial_np +"</td>"
+            mHtml += "<td>"+ response.data.scanned_at +"</td>"
+            mHtml += "</tr>"
+        $('.list-sample').append(mHtml)
+        $('#txt-total').text(response.data.total)
+        intNumb++
+    });
+</script>
+
+</html>
